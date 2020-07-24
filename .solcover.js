@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    copyPackages: ['zeppelin-solidity'],
+    copyPackages: ['openzeppelin-solidity'],
     skipFiles: [
         'mocks',
         'truffle/Migrations.sol',

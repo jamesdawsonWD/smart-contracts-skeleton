@@ -1,83 +1,85 @@
-pragma solidity 0.6.6;
+pragma solidity 0.6.9;
 
-/**
- * @dev Interface of the ERC20 standard as defined in the EIP. Does not include
- * the optional functions; to access them see {ERC20Detailed}.
- */
-interface IERC20 {
-    /**
-     * @dev Returns the amount of tokens in existence.
-     */
-    function totalSupply() external view returns (uint256);
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
-    /**
-     * @dev Returns the amount of tokens owned by `account`.
-     */
-    function balanceOf(address account) external view returns (uint256);
+// /**
+//  * @dev Interface of the ERC20 standard as defined in the EIP. Does not include
+//  * the optional functions; to access them see {ERC20Detailed}.
+//  */
+// interface IERC20 {
+//     /**
+//      * @dev Returns the amount of tokens in existence.
+//      */
+//     function totalSupply() external view returns (uint256);
 
-    /**
-     * @dev Moves `amount` tokens from the caller's account to `recipient`.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transfer(address recipient, uint256 amount) external returns (bool);
+//     /**
+//      * @dev Returns the amount of tokens owned by `account`.
+//      */
+//     function balanceOf(address account) external view returns (uint256);
 
-    /**
-     * @dev Returns the remaining number of tokens that `spender` will be
-     * allowed to spend on behalf of `owner` through {transferFrom}. This is
-     * zero by default.
-     *
-     * This value changes when {approve} or {transferFrom} are called.
-     */
-    function allowance(address owner, address spender) external view returns (uint256);
+//     /**
+//      * @dev Moves `amount` tokens from the caller's account to `recipient`.
+//      *
+//      * Returns a boolean value indicating whether the operation succeeded.
+//      *
+//      * Emits a {Transfer} event.
+//      */
+//     function transfer(address recipient, uint256 amount) external returns (bool);
 
-    /**
-     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * IMPORTANT: Beware that changing an allowance with this method brings the risk
-     * that someone may use both the old and the new allowance by unfortunate
-     * transaction ordering. One possible solution to mitigate this race
-     * condition is to first reduce the spender's allowance to 0 and set the
-     * desired value afterwards:
-     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-     *
-     * Emits an {Approval} event.
-     */
-    function approve(address spender, uint256 amount) external returns (bool);
+//     /**
+//      * @dev Returns the remaining number of tokens that `spender` will be
+//      * allowed to spend on behalf of `owner` through {transferFrom}. This is
+//      * zero by default.
+//      *
+//      * This value changes when {approve} or {transferFrom} are called.
+//      */
+//     function allowance(address owner, address spender) external view returns (uint256);
 
-    /**
-     * @dev Moves `amount` tokens from `sender` to `recipient` using the
-     * allowance mechanism. `amount` is then deducted from the caller's
-     * allowance.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+//     /**
+//      * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+//      *
+//      * Returns a boolean value indicating whether the operation succeeded.
+//      *
+//      * IMPORTANT: Beware that changing an allowance with this method brings the risk
+//      * that someone may use both the old and the new allowance by unfortunate
+//      * transaction ordering. One possible solution to mitigate this race
+//      * condition is to first reduce the spender's allowance to 0 and set the
+//      * desired value afterwards:
+//      * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+//      *
+//      * Emits an {Approval} event.
+//      */
+//     function approve(address spender, uint256 amount) external returns (bool);
 
-    /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`).
-     *
-     * Note that `value` may be zero.
-     */
-    event Transfer(address indexed from, address indexed to, uint256 value);
+//     /**
+//      * @dev Moves `amount` tokens from `sender` to `recipient` using the
+//      * allowance mechanism. `amount` is then deducted from the caller's
+//      * allowance.
+//      *
+//      * Returns a boolean value indicating whether the operation succeeded.
+//      *
+//      * Emits a {Transfer} event.
+//      */
+//     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
 
-    /**
-     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
-     * a call to {approve}. `value` is the new allowance.
-     */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-}
+//     /**
+//      * @dev Emitted when `value` tokens are moved from one account (`from`) to
+//      * another (`to`).
+//      *
+//      * Note that `value` may be zero.
+//      */
+//     event Transfer(address indexed from, address indexed to, uint256 value);
+
+//     /**
+//      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+//      * a call to {approve}. `value` is the new allowance.
+//      */
+//     event Approval(address indexed owner, address indexed spender, uint256 value);
+// }
 
 
 
-interface IKyberNetworkProxy {
+interface IKyberNetworkProxy is IERC20{
 
     event ExecuteTrade(
         address indexed trader,
@@ -244,194 +246,194 @@ contract Ownable is Context {
 
 
 contract HedgeManagement is Ownable {
-	IKyberNetworkProxy kyberProxy;
-	
-	uint public hedgeFund;
-	uint public totalTraders = 0;
-	uint public totalInvestors = 0;
+    IKyberNetworkProxy kyberProxy;
+    
+    uint public hedgeFund;
+    uint public totalTraders = 0;
+    uint public totalInvestors = 0;
 
-	enum Status {open, paused, closed}
-	mapping(uint256 => Status) public traderStatus;
-	mapping(address => uint) public addressToTradeAccount;
-	mapping(address => uint) public addressToInvestorAccount;
+    enum Status {open, paused, closed}
+    mapping(uint256 => Status) public traderStatus;
+    mapping(address => uint) public addressToTradeAccount;
+    mapping(address => uint) public addressToInvestorAccount;
 
-	mapping(uint => address) public traders;
-	mapping(uint => address) public investors;
+    mapping(uint => address) public traders;
+    mapping(uint => address) public investors;
 
-	modifier traderOnly(uint256 _id) {
-		require(traders[_id] == msg.sender, "HedgeManager#traderOnly: ONLY_TRADER_ALLOWED");
-		_;
-  	}
+    modifier traderOnly(uint256 _id) {
+        require(traders[_id] == msg.sender, "HedgeManager#traderOnly: ONLY_TRADER_ALLOWED");
+        _;
+    }
 
-	modifier traderOpen(uint256 _id) {
-		require(traderStatus[_id] == Status.open, "HedgeManager#traderOpen: ONLY_OPEN_TRADE_ACCOUNTS_ALLOWED");
-		_;
-	}
+    modifier traderOpen(uint256 _id) {
+        require(traderStatus[_id] == Status.open, "HedgeManager#traderOpen: ONLY_OPEN_TRADE_ACCOUNTS_ALLOWED");
+        _;
+    }
 
-	modifier investorOnly(uint256 _id) {
-		require(investors[_id] == msg.sender, "HedgeManager#investorOnly: ONLY_INVESTOR_ALLOWED");
-		_;
-  	}
+    modifier investorOnly(uint256 _id) {
+        require(investors[_id] == msg.sender, "HedgeManager#investorOnly: ONLY_INVESTOR_ALLOWED");
+        _;
+    }
 
-	function addInvestor(address _address) public onlyOwner {
-		totalInvestors++;
-		investors[totalInvestors] = _address;
-		addressToInvestorAccount[_address] = totalInvestors;
-	}
+    function addInvestor(address _address) public onlyOwner {
+        totalInvestors++;
+        investors[totalInvestors] = _address;
+        addressToInvestorAccount[_address] = totalInvestors;
+    }
 
-	function addTrader(address payable _address) public onlyOwner {
-		totalTraders++;
-		traders[totalTraders] = _address;
-		addressToTradeAccount[_address] = totalTraders;
-	}
+    function addTrader(address payable _address) public onlyOwner {
+        totalTraders++;
+        traders[totalTraders] = _address;
+        addressToTradeAccount[_address] = totalTraders;
+    }
 
-	function pauseTrader(uint256 _id) public onlyOwner {
-		traderStatus[_id] = Status.paused;
-	}
+    function pauseTrader(uint256 _id) public onlyOwner {
+        traderStatus[_id] = Status.paused;
+    }
 
-	function openTrader(uint256 _id) public onlyOwner {
-		traderStatus[_id] = Status.open;
-	}
-	function closeTrader(uint256 _id) public onlyOwner {
-		traderStatus[_id] = Status.closed;
-	}
+    function openTrader(uint256 _id) public onlyOwner {
+        traderStatus[_id] = Status.open;
+    }
+    function closeTrader(uint256 _id) public onlyOwner {
+        traderStatus[_id] = Status.closed;
+    }
 }
 
 contract Trader is HedgeManagement {
-	mapping(uint => uint) public equity;
-	mapping(uint => mapping(address => uint)) public investments;
+    mapping(uint => uint) public equity;
+    mapping(uint => mapping(address => uint)) public investments;
 
-	function trade(uint256 _id) public traderOnly(_id) {
+    function trade(uint256 _id) public traderOnly(_id) {
 
-	}
+    }
 
 }
 
 contract Investor is Trader {
-	mapping(address => uint) private balances;
-	mapping(address => uint) private totalInvested;
+    mapping(address => uint) private balances;
+    mapping(address => uint) private totalInvested;
 
-	function getBalance() public view return(uint){
-		return balances[msg.sender];
-	}
+    function getBalance() public view returns(uint){
+        return balances[msg.sender];
+    }
 
-	function getTotalInvested() public view return(uint){
-		return totalInvested[msg.sender];
-	}
+    function getTotalInvested() public view returns(uint){
+        return totalInvested[msg.sender];
+    }
 
-  	/**
+      /**
     * @dev invest in a trader by paying directly into their account
     * @param _id uint256 ID of the traders account
     */
-	function invest(uint _id) public payable {
-		//convert to dai
-		require(msg.value > 0, "Investor#invest: AMOUNT_LESS_THAN_ZERO");
-		require(traders[_id] != 0, "Investor#invest: TRADER_DOES_NOT_EXIST");
+    function invest(uint _id) public payable {
+        //convert to dai
+        require(msg.value > 0, "Investor#invest: AMOUNT_LESS_THAN_ZERO");
+        require(traders[_id] != 0, "Investor#invest: TRADER_DOES_NOT_EXIST");
 
-		hedgeFund += msg.value;
-		equity[_id] += msg.value;
-		totalInvested[msg.sender] += msg.value;
-		investments[_id][msg.sender] += msg.value;
-	}
+        hedgeFund += msg.value;
+        equity[_id] += msg.value;
+        totalInvested[msg.sender] += msg.value;
+        investments[_id][msg.sender] += msg.value;
+    }
 
-	/**
+    /**
     * @dev invest in a trader by paying with the senders balance
     * @param _id uint256 ID of the traders account
-	* @param _amount the amount do be invested
+    * @param _amount the amount do be invested
     */
-	function invest(uint _id, uint _amount) public {
-		require(_amount > 0, "Investor#invest: AMOUNT_LESS_THAN_ZERO");
-		require(traders[_id] != 0, "Investor#invest: TRADER_DOES_NOT_EXIST");
+    function invest(uint _id, uint _amount) public {
+        require(_amount > 0, "Investor#invest: AMOUNT_LESS_THAN_ZERO");
+        require(traders[_id] != 0, "Investor#invest: TRADER_DOES_NOT_EXIST");
 
-		uint _balance = balances[msg.sender];
-		require(_balance > 0, "Investor#invest: BALANCE_EMPTY");
-		require(_balance >= _amount, "Investor#invest: AMOUNT_GREATER_THAN_BALANCE");
+        uint _balance = balances[msg.sender];
+        require(_balance > 0, "Investor#invest: BALANCE_EMPTY");
+        require(_balance >= _amount, "Investor#invest: AMOUNT_GREATER_THAN_BALANCE");
 
-		balances[msg.sender] -= _amount;
-		equity[_id] += _amount;
-		totalInvested[msg.sender] += _amount;
-		investments[_id][msg.sender] += _amount;
-	}
+        balances[msg.sender] -= _amount;
+        equity[_id] += _amount;
+        totalInvested[msg.sender] += _amount;
+        investments[_id][msg.sender] += _amount;
+    }
 
-	/**
+    /**
     * @dev close an full investment with a trader
     * @param _id uint256 ID of the traders account
     */
-	function close(uint _id) public {
-		require(traders[_id] != 0, "Investor#invest: TRADER_DOES_NOT_EXIST");
+    function close(uint _id) public {
+        require(traders[_id] != 0, "Investor#invest: TRADER_DOES_NOT_EXIST");
 
-		uint _investment = investments[_id][msg.sender];
-		require(_investment > 0, "Investor#close: BALANCE_EMPTY");
+        uint _investment = investments[_id][msg.sender];
+        require(_investment > 0, "Investor#close: BALANCE_EMPTY");
 
-		equity[_id] -= _investment;
-		balances[msg.sender] += _investment;
-		totalInvested[msg.sender] -= _investment;
-		investments[_id][msg.sender] = 0;
-	}
+        equity[_id] -= _investment;
+        balances[msg.sender] += _investment;
+        totalInvested[msg.sender] -= _investment;
+        investments[_id][msg.sender] = 0;
+    }
 
-	/**
+    /**
     * @dev close a certain amount from an investment
     * @param _id uint256 ID of the traders account
-	* @param _amount the amount do be closed
+    * @param _amount the amount do be closed
     */
-	function close(uint _id, uint _amount) public {
-		require(traders[_id] != 0, "Investor#invest: TRADER_DOES_NOT_EXIST");
+    function close(uint _id, uint _amount) public {
+        require(traders[_id] != 0, "Investor#invest: TRADER_DOES_NOT_EXIST");
 
-		uint _investment = investments[_id][msg.sender];
-		require(_investment > 0, "Investor#close: BALANCE_EMPTY");
-		require(_investment >= _amount, "Investor#close: AMOUNT_GREATER_THAN_INVESTMENT");
+        uint _investment = investments[_id][msg.sender];
+        require(_investment > 0, "Investor#close: BALANCE_EMPTY");
+        require(_investment >= _amount, "Investor#close: AMOUNT_GREATER_THAN_INVESTMENT");
 
-		equity[_id] -= _investment;
-		balances[msg.sender] += _amount;
-		totalInvested[msg.sender] -= _amount;
-		investments[_id][msg.sender] -= _amount;
-	}
+        equity[_id] -= _investment;
+        balances[msg.sender] += _amount;
+        totalInvested[msg.sender] -= _amount;
+        investments[_id][msg.sender] -= _amount;
+    }
 
-	/**
+    /**
     * @dev withdraw all from balance
     */
-	function withdraw() public {
-		uint _balance = balances[msg.sender];
-		require(_balance > 0, "Investor#withdraw: BALANCE_EMPTY");
-		
-		payable(msg.sender).transfer(_balance);
-		balances[msg.sender] -= _amount;
-	}
-	/**
+    function withdraw() public {
+        uint _balance = balances[msg.sender];
+        require(_balance > 0, "Investor#withdraw: BALANCE_EMPTY");
+        
+        payable(msg.sender).transfer(_balance);
+        balances[msg.sender] -= _amount;
+    }
+    /**
     * @dev withdraw amount from balance
     * @param _amount the amount do be withdrawn
     */
-	function withdraw(uint256 _amount) public {
-		require(_amount > 0, "Investor#withdraw: AMOUNT_LESS_THAN_ZERO");
-		
-		uint _balance = balances[msg.sender];
-		require(_balance > 0, "Investor#withdraw: BALANCE_EMPTY");
-		require(_balance >= _amount, "Investor#withdraw: AMOUNT_GREATER_THAN_BALANCE");
-	
-		payable(msg.sender).transfer(_amount);
-		balances[msg.sender] -= _amount;
-	}
+    function withdraw(uint256 _amount) public {
+        require(_amount > 0, "Investor#withdraw: AMOUNT_LESS_THAN_ZERO");
+        
+        uint _balance = balances[msg.sender];
+        require(_balance > 0, "Investor#withdraw: BALANCE_EMPTY");
+        require(_balance >= _amount, "Investor#withdraw: AMOUNT_GREATER_THAN_BALANCE");
+    
+        payable(msg.sender).transfer(_amount);
+        balances[msg.sender] -= _amount;
+    }
 
-	/**
+    /**
     * @dev withdraw amount from balance to specific address
     * @param _amount the amount do be withdrawn
-	* @param _address the address to transfer the amount to
+    * @param _address the address to transfer the amount to
     */
-	function withdraw(uint256 _amount, address _address) public {
-		require(_amount > 0, "Investor#withdraw: AMOUNT_LESS_THAN_ZERO");
-		
-		uint _balance = balances[msg.sender];
-		require(_balance > 0, "Investor#withdraw: BALANCE_EMPTY");
-		require(_balance >= _amount, "Investor#withdraw: AMOUNT_GREATER_THAN_BALANCE");
-	
-		payable(_address).transfer(_amount);
-		balances[msg.sender] -= _amount;
-	}
+    function withdraw(uint256 _amount, address _address) public {
+        require(_amount > 0, "Investor#withdraw: AMOUNT_LESS_THAN_ZERO");
+        
+        uint _balance = balances[msg.sender];
+        require(_balance > 0, "Investor#withdraw: BALANCE_EMPTY");
+        require(_balance >= _amount, "Investor#withdraw: AMOUNT_GREATER_THAN_BALANCE");
+    
+        payable(_address).transfer(_amount);
+        balances[msg.sender] -= _amount;
+    }
 
-	function deposit() public payable {
-		require(msg.value > 0, "Investor#deposit: AMOUNT_LESS_THAN_ZERO");
-		balances[msg.sender] += msg.value;
-	}
+    function deposit() public payable {
+        require(msg.value > 0, "Investor#deposit: AMOUNT_LESS_THAN_ZERO");
+        balances[msg.sender] += msg.value;
+    }
 
-	function recieve() external payable {deposit();}
+    function recieve() external payable {deposit();}
 }

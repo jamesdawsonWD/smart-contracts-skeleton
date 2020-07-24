@@ -16,6 +16,7 @@
             "warning",
             3
         ],
+        "linebreak-style": "windows",
         "security/no-block-members": [
             1,
             [

@@ -1,5 +1,3 @@
-'use strict';
-
 require('babel-register')({
     // Need to be explicitly specified to allow importing helpers from Zeppelin Solidity written also in ES2015.
     only: '/test/'
@@ -17,5 +15,11 @@ module.exports = {
             gas: 0xfffffffffff,
             gasPrice: 0x01,
         },
-    }
+    },
+    compilers: {
+        solc: {
+          version: "0.6.9"
+        }
+    },
+    plugins: ["solidity-coverage"]
 };

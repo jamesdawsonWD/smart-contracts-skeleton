@@ -1,27 +1,24 @@
-pragma solidity ^0.4.17;
+pragma solidity 0.6.9;
 
-/**
- * @dev Used for Truffle framework. Do not edit.
- */
 contract Migrations {
     address public owner;
-    uint public last_completed_migration;
+    uint public lastCompletedMigration;
 
-    modifier restricted() {
-        if (msg.sender == owner) _;
-    }
-
-    function Migrations() public {
+    constructor() public {
         owner = msg.sender;
     }
 
-    function setCompleted(uint completed) public restricted {
-        last_completed_migration = completed;
+    modifier restricted() {
+        if (msg.sender == owner)
+            _;
     }
 
-    function upgrade(address new_address) public restricted {
-        Migrations upgraded = Migrations(new_address);
-        upgraded.setCompleted(last_completed_migration);
+    function setCompleted(uint completed) public restricted {
+        lastCompletedMigration = completed;
+    }
+
+    function upgrade(address newAddress) public restricted {
+        Migrations upgraded = Migrations(newAddress);
+        upgraded.setCompleted(lastCompletedMigration);
     }
 }
-
